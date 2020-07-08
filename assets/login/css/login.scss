@@ -1,0 +1,190 @@
+@import "~/assets/color.scss";
+.login-page {
+  position: relative;
+
+  &:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: -1;
+    background: url("/login/img/bg.jpg");
+    background-size: cover;
+    -webkit-filter: blur(10px);
+    filter: blur(10px);
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .container {
+    min-height: 100vh;
+    z-index: 999;
+    padding: 20px;
+    position: relative;
+  }
+
+  .form-holder {
+    width: 100%;
+    border-radius: 5px;
+    overflow-x: hidden;
+    margin-bottom: 50px;
+
+    /* 消除 col 的 padding */
+    div[class*="col-"] {
+      padding: 0;
+    }
+
+    .info,
+    .form {
+      min-height: 70vh;
+      padding: 40px;
+      height: 100%;
+    }
+
+    /* 自定义登录页面的 h1 */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+    }
+
+    /* 自定义登录页面的 p */
+    p {
+      font-weight: 300;
+    }
+
+    .info {
+      background: rgba(86, 61, 124, 0.9);
+      color: #fff;
+    }
+
+    .form {
+      .content {
+        width: 100%;
+
+        .title {
+          color: $MainColor;
+          padding-bottom: 30px;
+        }
+
+        form {
+          width: 100%;
+          max-width: 400px;
+
+          .form-group {
+            position: relative;
+            margin-bottom: 30px;
+          }
+
+          /* 登录按钮样式 */
+          #login {
+            margin-bottom: 20px;
+            cursor: pointer;
+          }
+
+          .custom-control {
+            position: relative;
+            display: block;
+            min-height: 1.5rem;
+            padding-left: 1.5rem;
+
+            label {
+              color: $MainColor;
+            }
+
+            .custom-control-input {
+              position: absolute;
+              z-index: -1;
+              opacity: 0;
+
+              &:checked ~ .custom-control-label::before {
+                border-color: $MainColor;
+                background-color: $MainColor;
+              }
+  
+              &:focus ~ .custom-control-label::before {
+                box-shadow: 0 0 0 0.2rem rgba(121, 106, 238, 0.25);
+              }
+            }
+
+            .custom-control-label {
+              position: relative;
+              margin-bottom: 0;
+              vertical-align: top;
+            }
+
+            // .custom-control-input:checked ~ .custom-control-label::before {
+            //   border-color: $MainColor;
+            //   background-color: $MainColor;
+            // }
+
+            // .custom-control-input:focus ~ .custom-control-label::before {
+            //   box-shadow: 0 0 0 0.2rem rgba(121, 106, 238, 0.25);
+            // }
+          }
+        }
+
+        small {
+          color: #aaa;
+        }
+
+        a.singup {
+          font-size: 0.9em;
+          color: #85b4f2;
+        }
+      }
+    }
+  }
+}
+
+.page {
+  overflow-x: hidden;
+}
+
+.has-shadow {
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1), -1px 0 2px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1),
+    -1px 0 2px rgba(0, 0, 0, 0.05);
+}
+
+button,
+input {
+  outline: none !important;
+}
+
+/* 输入框 material 样式 */
+input.input-material {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+
+  &:focus {
+    border-color: $MainColor !important;
+  }
+}
+
+/* 下面几个是输入框的事件 */
+input.input-material.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+input.input-material ~ label.active {
+  font-size: 0.8rem;
+  top: -10px;
+  color: $MainColor;
+}
+
+input.input-material.is-invalid ~ label {
+  color: #dc3545;
+}
+
+.btn-primary {
+  background-color: #8364b1;
+  border-color: #8364b1;
+
+  &:hover {
+    background-color: $MainColor;
+  }
+}
