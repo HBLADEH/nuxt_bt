@@ -19,6 +19,11 @@ class Security
    */
   public function checkPermission($permission)
   {
+    // $headers  = get_headers();
+    // foreach ($headers as $header => $value) {
+    //   echo "$header: $value <br />\n";
+    // }
+    // exit();
     $token = Session::get("userToken");
     $AdminService = new AdminService();
     $permissions = $AdminService->getPermissionsByToken($token);

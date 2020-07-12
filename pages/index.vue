@@ -2,23 +2,12 @@
   <div>
     <AdminNavbar></AdminNavbar>
     <b-breadcrumb :items="breadList"></b-breadcrumb>
-    <b-card class="text-center" style="margin: 5px">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm info-item info-dark">属性</div>
-          <div class="col-sm info-item info-dark">值</div>
-        </div>
-        <div class="row">
-          <div class="col-sm info-item">属性</div>
-          <div class="col-sm info-item">值</div>
-        </div>
-      </div>
-    </b-card>
-
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+const Cookie = process.browser ? require('js-cookie') : undefined
 import AdminNavbar from '~/components/admin/AdminNavbar.vue';
 export default {
   data() {
@@ -29,6 +18,12 @@ export default {
           href: '#'
         },
       ],
+    }
+  },
+  mounted() {
+    let token = Cookie.get('token')
+    if (!token) {
+      this.$router.push({ path: '/login' })
     }
   },
   components: {

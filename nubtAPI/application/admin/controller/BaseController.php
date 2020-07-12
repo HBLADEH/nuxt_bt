@@ -198,6 +198,11 @@ class BaseController extends Controller
    */
   public function checkIsNeedLogin($controllerName)
   {
+    $headers  = $_SERVER;
+    foreach ($headers as $header => $value) {
+      echo "$header: $value <br />\n";
+    }
+    exit();
     if ($controllerName != 'Login') {
       if (!(Session::has('userToken'))) {
         $this->error('检测到用户没有登录', '/admin/login');
@@ -251,8 +256,9 @@ class BaseController extends Controller
 
   public function checkPermission($permission)
   {
-    if (!Security::checkPermission(1)) {
-      $this->error("检测到该用户没有权限!!!");
-    }
+    Security::checkPermission(1);
+    // if (!Security::checkPermission(1)) {
+    //   $this->error("检测到该用户没有权限!!!");
+    // }
   }
 }

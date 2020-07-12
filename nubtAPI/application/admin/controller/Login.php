@@ -39,11 +39,6 @@ class Login extends BaseController
 
     $check_list['username'] = $username;
 
-
-    // $check_list = [
-    //   'username' => $username,
-    //   'password' => $password
-    // ];
     $adminData = $this->thisService->findDataByIdOrList($check_list);
     if ($adminData) {
       $is_lock = $adminData['is_lock'];
@@ -62,7 +57,10 @@ class Login extends BaseController
         $this->thisService->update($adminData);
 
         // Session::set('userToken', $token); // 设置 token
-        $result['data'] = ['token' => $token];
+        $result['data'] = [
+          'token' => $token,
+          'username' => $username
+        ];
         $result['success'] = true;
         $result['msg'] = '登录成功！';
       } else {

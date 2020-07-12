@@ -125,4 +125,18 @@ class Admin extends BaseService
       'roleid' => $roleid
     ]);
   }
+
+  public function getWelcomeInfo() {
+    $infoList = array(
+      'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],
+      'SERVER_NAME' => $_SERVER['SERVER_NAME'],
+      'SERVER_PORT' => $_SERVER['SERVER_PORT'],
+      'SERVER_VERSION' => php_uname('s').php_uname('r'),
+      'SERVER_SYSTEM' => php_uname(),
+      'PHP_VERSION' => PHP_VERSION,
+      'TP_VERSION' => THINK_VERSION,
+      'TP_LANGUAGE' => $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+      'TP_RUNNINGWAY' => php_sapi_name(),
+    );
+  }
 }
