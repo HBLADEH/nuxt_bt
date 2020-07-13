@@ -7,7 +7,6 @@
 </template>
 
 <script>
-const Cookie = process.browser ? require('js-cookie') : undefined
 import AdminNavbar from '~/components/admin/AdminNavbar.vue';
 export default {
   data() {
@@ -20,15 +19,16 @@ export default {
       ],
     }
   },
+  created() {
+    // this.$router.push({ path: '/welcome' })
+  }
+  ,
   mounted() {
-    let token = Cookie.get('token')
-    if (!token) {
-      this.$router.push({ path: '/login' })
-    }
   },
   components: {
     AdminNavbar
-  }
+  },
+  middleware: 'authenticated'
 }
 </script>
 

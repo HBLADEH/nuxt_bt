@@ -6,7 +6,10 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#">管理员管理</b-nav-item>
+          <li class="nav-item">
+            <nuxt-link class="nav-link" to="/admin">管理员管理</nuxt-link>
+          </li>
+          <!-- <b-nav-item href="#">管理员管理</b-nav-item> -->
           <b-nav-item href="#">管理</b-nav-item>
         </b-navbar-nav>
 
@@ -30,7 +33,6 @@
 </template>
 
 <script>
-const Cookie = process.browser ? require('js-cookie') : undefined
 export default {
   data() {
     return {
@@ -38,22 +40,21 @@ export default {
     }
   },
   created() {
-    this.$router.push({ path: '/welcome' })
   },
   mounted() {
-    this.username = Cookie.get('username')
+    this.username = this.$cookiz.get('username')
 
     // 此为弹出框隐藏后的判断
     this.$root.$on('bv::toast:hidden', event => {
-      if (!Cookie.get('token')) {
+      if (!this.$cookiz.get('token')) {
         this.$router.push({ path: '/login' })
       }
     })
   },
   methods: {
     doLoginOut() {
-      Cookie.remove('token');
-      Cookie.remove('username');
+      this.$cookiz.remove('token');
+      this.$cookiz.remove('username');
       // 显示提示框
       this.$bvToast.toast('登出成功', {
         title: '登出成功',

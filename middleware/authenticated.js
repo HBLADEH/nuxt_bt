@@ -1,4 +1,7 @@
-export default function (context) {
-  context.userAgent = process.server ? context.req.headers['user-agent'] : navigator.userAgent
-  console.log(context.app);
+// 该中间件主要作用是进行权限判断
+export default function({ app, redirect }) {
+  let token = app.$cookiz.get("token");
+  if (!token) {
+    return redirect("/login");
+  }
 }

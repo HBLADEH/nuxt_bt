@@ -53,7 +53,8 @@ export default {
     // Doc: https://bootstrap-vue.js.org
     "bootstrap-vue/nuxt",
     "@nuxtjs/axios",
-    "js-cookie"
+    "js-cookie",
+    ['cookie-universal-nuxt', { alias: 'cookiz' }]
   ],
   axios: {
     prefix: "/api",

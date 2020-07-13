@@ -25,9 +25,9 @@ class Admin extends Merge
   public function getJustAttr($value, $data)
   {
 
-    $res = Db::table('pr_admin_to_role')
+    $res = Db::table('nt_admin_to_role')
       ->alias('ar')
-      ->join('pr_role r', 'ar.roleid = r.id')
+      ->join('nt_role r', 'ar.roleid = r.id')
       ->where('ar.adminid', $data['id'])
       ->find();
 

@@ -85,7 +85,7 @@
 
 <script>
 import qs from "qs";
-const Cookie = process.browser ? require('js-cookie') : undefined
+// const Cookie = process.browser ? require('js-cookie') : undefined
 
 export default {
   data() {
@@ -101,8 +101,8 @@ export default {
 
     // 此为弹出框隐藏后的判断
     this.$root.$on('bv::toast:hidden', event => {
-      if (this.isLogin && Cookie.get('token') != '') {
-        this.$router.push({ path: '/' })
+      if (this.isLogin && this.$cookiz.get('token') != '') {
+        this.$router.push({ path: '/welcome' })
       }
     })
   },
@@ -125,8 +125,10 @@ export default {
           this.isLogin = true
 
           // 存储 token
-          Cookie.set('token', res.data.data.token)
-          Cookie.set('username', res.data.data.username)
+          // Cookie.set('token', res.data.data.token)
+          // Cookie.set('username', res.data.data.username)
+          this.$cookiz.set('token',res.data.data.token)
+          this.$cookiz.set('username',res.data.data.username)
         }
         // 显示提示框
         this.$bvToast.toast(res.data.msg, {

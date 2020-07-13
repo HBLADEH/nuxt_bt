@@ -55,7 +55,7 @@
     }
 
     .info {
-      background: rgba(86, 61, 124, 0.9);
+      background: rgba(75, 154, 240, 0.9);
       color: #fff;
     }
 
@@ -102,10 +102,10 @@
                 border-color: $MainColor;
                 background-color: $MainColor;
               }
-  
-              &:focus ~ .custom-control-label::before {
-                box-shadow: 0 0 0 0.2rem rgba(121, 106, 238, 0.25);
-              }
+
+              // &:focus ~ .custom-control-label::before {
+              //   box-shadow: 0 0 0 0.2rem rgba(121, 106, 238, 0.25);
+              // }
             }
 
             .custom-control-label {
@@ -181,8 +181,8 @@ input.input-material.is-invalid ~ label {
 }
 
 .btn-primary {
-  background-color: #8364b1;
-  border-color: #8364b1;
+  background-color: #4B9AF0;
+  border-color: #4B9AF0;
 
   &:hover {
     background-color: $MainColor;

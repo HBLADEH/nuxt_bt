@@ -75,79 +75,22 @@ class Index extends BaseController
   }
 
 
-  /**
-   * 获取系统信息
-   */
-  public function getSysInfo()
-  {
-    // // 服务器IP地址
-    // echo $_SERVER['SERVER_ADDR'];
-
-    // // 服务器域名    
-    // echo $_SERVER['SERVER_NAME'];
-
-    // // 服务器端口    
-    // echo $_SERVER['SERVER_PORT'];
-
-    // // 服务器版本     
-    // echo php_uname('s') . php_uname('r');
-
-    // // 服务器操作系统  
-    // echo php_uname();
-
-    // // PHP版本         
-    echo PHP_VERSION;
-
-    // // 获取PHP安装路径：         
-    // echo DEFAULT_INCLUDE_PATH;
-
-    // // 获取当前文件绝对路径：    
-    // echo __FILE__;
-
-    // // 获取Http请求中Host值： 
-    // echo $_SERVER["HTTP_HOST"];
-
-    // // 获取Zend版本： 
-    // echo Zend_Version();
-
-
-    // // PHP运行方式 
-    // echo php_sapi_name();
-
-    // // 服务器当前时间 
-    // echo date("Y-m-d H:i:s");
-
-    // // 最大上传限制  
-    // echo get_cfg_var("upload_max_filesize");
-
-    // // 最大执行时间  
-    // echo get_cfg_var("max_execution_time") . "秒 ";
-
-    // // 脚本运行占用最大内存  
-    // echo get_cfg_var("memory_limit") ? get_cfg_var("memory_limit") : "无";
-
-    // // 获取服务器解译引擎 / 运行环境    
-    // echo $_SERVER['SERVER_SOFTWARE'];
-
-    // // 获取服务器CPU数量     
-    // echo $_SERVER['PROCESSOR_IDENTIFIER'];
-
-    // // 获取服务器系统目录
-    // echo $_SERVER['SystemRoot'];
-
-    // // 获取服务器域名（主机名）
-    // echo $_SERVER["HTTP_HOST"];
-
-    // // 获取用户域名
-    // echo $_SERVER['USERDOMAIN'];
-
-    // // 获取服务器语言       
-    // echo $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-
-    // // 获取服务器Web端口    
-    // echo $_SERVER['SERVER_PORT'];
-
-    // // 获取请求页面时通信协议的名称和版本  
-    // echo $_SERVER['SERVER_PROTOCOL'];
+  public function getWelcomeInfo() {
+    $result = $this->createResultJSON();
+    $infoList = array(
+      'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],
+      'SERVER_NAME' => $_SERVER['SERVER_NAME'],
+      'SERVER_PORT' => $_SERVER['SERVER_PORT'],
+      'SERVER_VERSION' => php_uname('s').php_uname('r'),
+      'SERVER_SYSTEM' => php_uname(),
+      'PHP_VERSION' => PHP_VERSION,
+      'TP_VERSION' => THINK_VERSION,
+      'TP_LANGUAGE' => $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+      'TP_RUNNINGWAY' => php_sapi_name(),
+    );
+    $result['success'] = true;
+    $result['code'] = 200;
+    $result['data'] = $infoList;
+    return json($result);
   }
 }

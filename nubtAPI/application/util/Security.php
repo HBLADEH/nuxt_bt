@@ -24,7 +24,7 @@ class Security
     //   echo "$header: $value <br />\n";
     // }
     // exit();
-    $token = Session::get("userToken");
+    $token  = $_SERVER['HTTP_AUTHORIZATION'];
     $AdminService = new AdminService();
     $permissions = $AdminService->getPermissionsByToken($token);
 

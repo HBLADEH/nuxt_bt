@@ -21,7 +21,10 @@ class BaseController extends Controller
   {
     parent::__construct(); // 必须添加,需要执行父类的初始化函数,不管有没有
     $controllerName = $this->request->controller();
-    $this->checkIsNeedLogin($controllerName);
+    $result = $this->checkIsNeedLogin($controllerName);
+    if (!$result['success']) {
+      return $result;
+    }
   }
   /**
    * 创建通用返回 JSON 数组
@@ -198,24 +201,30 @@ class BaseController extends Controller
    */
   public function checkIsNeedLogin($controllerName)
   {
-    $headers  = $_SERVER;
-    foreach ($headers as $header => $value) {
-      echo "$header: $value <br />\n";
-    }
-    exit();
+    $result = $this->createResultJSON();
+
+    $token  = $_SERVER['HTTP_AUTHORIZATION'];
     if ($controllerName != 'Login') {
-      if (!(Session::has('userToken'))) {
-        $this->error('检测到用户没有登录', '/admin/login');
+      if (!$token) {
+        // $this->error('检测到用户没有登录', '/admin/login');
+        $result['code'] = 403;
+        $result['msg'] = '检测到用户没有登录';
       } else {
         $tokenUtil = new TokenUtil;
-        $token = Session::get('userToken');
         $res_code = $tokenUtil->checkToken($token);
+        $result['code'] = $res_code;
+
         switch ($res_code) {
           case 201:
-            $this->error('用户长时间未使用，请重新登录', '/admin/login');
+            $result['msg'] = '用户长时间未使用，请重新登录';
+            // $this->error('用户长时间未使用，请重新登录', '/admin/login');
             break;
           case 202:
-            $this->error('未找到该用户信息!', '/admin/login');
+            $result['msg'] = '未找到该用户信息!';
+            // $this->error('未找到该用户信息!', '/admin/login');
+            break;
+          default:
+            $result['success'] = true;
             break;
         }
       }
@@ -256,9 +265,8 @@ class BaseController extends Controller
 
   public function checkPermission($permission)
   {
-    Security::checkPermission(1);
-    // if (!Security::checkPermission(1)) {
-    //   $this->error("检测到该用户没有权限!!!");
-    // }
+    if (!Security::checkPermission(1)) {
+      $this->error("检测到该用户没有权限!!!");
+    }
   }
 }
