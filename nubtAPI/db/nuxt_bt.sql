@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : Localhost
+ Source Server         : localhost_3306
  Source Server Type    : MySQL
  Source Server Version : 80012
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 08/07/2020 12:47:27
+ Date: 13/07/2020 18:40:16
 */
 
 SET NAMES utf8mb4;
@@ -35,8 +35,19 @@ CREATE TABLE `nt_admin`  (
 -- ----------------------------
 -- Records of nt_admin
 -- ----------------------------
-INSERT INTO `nt_admin` VALUES (1, 'BLADE', '5a0add85cc963048bdd84cfd99f2d637', 'b9dacda1525b34d9ba1fca1087401d8f3a4aa286', '1594788343', 0, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (1, 'BLADE', '5a0add85cc963048bdd84cfd99f2d637', 'f0d2d42c1a33a14480a2ef481d00d03494c948ab', '1595240982', 0, '2020-05-21 13:43:38');
 INSERT INTO `nt_admin` VALUES (2, 'BLADE2', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (3, 'BLADE3', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (4, 'BLADE4', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (5, 'BLADE5', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (6, 'BLADE6', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (7, 'BLADE7', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (8, 'BLADE8', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (9, 'BLADE9', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (10, 'BLADE10', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (11, 'BLADE11', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (12, 'BLADE12', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
+INSERT INTO `nt_admin` VALUES (13, 'BLADE13', '5a0add85cc963048bdd84cfd99f2d637', 'f55d08e630c603a9e3ffdbe9abba8525e304aaee', '1591099707', 5, '2020-05-21 13:43:38');
 
 -- ----------------------------
 -- Table structure for nt_admin_to_role
@@ -86,7 +97,7 @@ CREATE TABLE `nt_relation`  (
   `result_time` datetime(0) NULL DEFAULT NULL COMMENT '返回时间',
   `money` double NOT NULL COMMENT '交易金额',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of nt_relation
