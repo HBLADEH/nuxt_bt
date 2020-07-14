@@ -112,7 +112,6 @@ export default {
     doLogin(evt) {
       evt.preventDefault()
 
-      // alert(JSON.stringify(this.form))
       this.$axios.post('/admin/login/checkLogin', qs.stringify(this.form)
       ).then(res => {
         let resState = res.data.success
@@ -125,8 +124,6 @@ export default {
           this.isLogin = true
 
           // 存储 token
-          // Cookie.set('token', res.data.data.token)
-          // Cookie.set('username', res.data.data.username)
           this.$cookiz.set('token',res.data.data.token)
           this.$cookiz.set('username',res.data.data.username)
         }
