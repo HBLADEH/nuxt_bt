@@ -15,23 +15,15 @@
             </b-input-group>
           </div>
         </div>
-        <b-table
-          id="data-table"
-          table-variant="primary"
-          responsive
-          bordered
-          hover
-          :busy="isBusy"
-          :items="tableItems"
-          :fields="tableFileds"
-        >
+        <b-table id="data-table" table-variant="primary" responsive bordered hover :busy="isBusy" :items="tableItems" :fields="tableFileds">
           <template v-slot:table-busy>
             <div class="text-center text-danger my-2">
               <b-spinner class="align-middle"></b-spinner>
               <strong>Loading...</strong>
             </div>
           </template>
-          <template v-slot:cell(actions)="row">
+          <template v-slot:cell(actions)>
+            <!-- v-slot:cell(actions)="row" -->
             <b-button-group>
               <b-button size="sm" variant="info" v-b-modal.modal-edit>修改</b-button>
               <b-button size="sm" variant="danger">删除</b-button>
@@ -40,19 +32,31 @@
             <b-button size="sm" @click="row.toggleDetails">删除</b-button>-->
           </template>
         </b-table>
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="rows"
-          :per-page="perPage"
-          aria-controls="data-table"
-          align="center"
-          @input="changePage"
-        ></b-pagination>
+        <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="data-table" align="center" @input="changePage"></b-pagination>
       </div>
     </b-card>
-    <b-modal id="modal-add" title="添加数据">
-      <p class="my-4">添加数据页面</p>
+
+    <b-modal id="modal-add" title="添加数据" @ok="doAdd" cancel-title="取消" ok-title="确认">
+      <form ref="addForm" @submit.stop.prevent="handleSubmit">
+        <b-form-group label="用户名称:" label-for="n-username" invalid-feedback="用户名必须要填写">
+          <b-form-input id="n-username" v-model="n_username" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="用户密码:" label-for="n-password" invalid-feedback="用户密码必须要填写">
+          <b-form-input id="n-password" type="password" v-model="n_password" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="确认密码:" label-for="n-cpassword" invalid-feedback="确认密码必须要一致">
+          <b-form-input id="n-cpassword" type="password" v-model="n_cpassword" required :pattern="n_password"></b-form-input>
+        </b-form-group>
+        <b-form-group label="用户角色:" label-for="n-cpassword" invalid-feedback="请选择一个角色">
+          <b-form-select id="n-role" v-model="n_roleid" :options="roleList" required></b-form-select>
+        </b-form-group>
+        <div class="custom-control custom-switch text-center">
+          <input type="checkbox" class="custom-control-input" id="customSwitch1" v-model="n_is_lock">
+          <label class="custom-control-label" for="customSwitch1">是否禁用</label>
+        </div>
+      </form>
     </b-modal>
+
     <b-modal id="modal-edit" title="编辑数据">
       <p class="my-4">编辑数据页面</p>
     </b-modal>
@@ -63,11 +67,19 @@
 export default {
   data() {
     return {
+      userId: '',
       perPage: 3, // 
       currentPage: 1, // 当前页数
-      isBusy: false, // 是否忙碌\
+      isBusy: false, // 是否忙碌
       pageCount: 0, // 数据总数
       username: '', // 检索用户名
+      // 添加页面的数据参数
+      n_username: '',
+      n_password: '',
+      n_cpassword: '',
+      n_roleid: 2,
+      n_is_lock: false,
+      roleList: [{ text: '管理员', value: 1 }, { text: '订单处理员', value: 2 }],
       tableFileds: [
         {
           key: 'id',
@@ -101,10 +113,8 @@ export default {
       return this.pageCount
     }
   }, methods: {
-
     getTableData() {
-      this.toggleBusy()
-
+      this.toggleBusy() // 先让表处于繁忙状态
       this.$axios.get('/admin/admin/FindAll',
         {
           params: {
@@ -113,20 +123,81 @@ export default {
             username: this.username
           }
         }).then(res => {
-          // console.log(res);
           this.tableItems = res.data.data
           this.pageCount = res.data.count
-          this.toggleBusy()
+          this.toggleBusy() // 恢复状态
         })
     },
     // 切换页面
     changePage(page) {
       this.getTableData()
     },
+
     // 切换忙碌状态
     toggleBusy() {
       this.isBusy = !this.isBusy
+    },
+
+    // 添加页面的确认按钮
+    doAdd(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      this.handleSubmit()
+    },
+
+    // 检测验证值
+    checkFormValidity() {
+      const valid = this.$refs.addForm.checkValidity()
+      this.$refs.addForm.classList.add('was-validated');
+      return valid
+    },
+
+    //提交事件
+    handleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
+      }
+
+      this.addPost()
+
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-prevent-closing')
+      })
+    },
+
+    // 提交添加请求
+    addPost() {
+      this.$axios.post('/admin/admin/doAdd',
+        {
+          username: this.n_username,
+          password: this.n_password,
+          roleid: this.n_roleid,
+          is_lock: this.n_is_lock ? 5 : 1,
+        }).then(res => {
+          let resState = res.data.success
+          let variant = 'danger'
+          let title = '操作错误'
+          // console.log(res.data.data.token);
+          if (resState) {
+            variant = 'success'
+            title = '登录成功'
+            this.isLogin = true
+
+            // 存储 token
+            this.$cookiz.set('token', res.data.data.token)
+            this.$cookiz.set('username', res.data.data.username)
+          }
+          // 显示提示框
+          this.$bvToast.toast(res.data.msg, {
+            title: title,
+            variant: variant,
+            solid: true,
+            autoHideDelay: 2000,
+          })
+        })
     }
+
   },
   middleware: 'authenticated'
 }
