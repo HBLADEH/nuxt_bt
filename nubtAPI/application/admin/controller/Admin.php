@@ -76,12 +76,13 @@ class Admin extends BaseController
   public function doAdd()
   {
     $result = $this->createResultJSON();
-    $data = $_POST['data']; // 获取数据
-
-    $checkList = [
+    $data = $_POST; // 获取数据
+    $data['registered_time'] = date("Y-m-d h:i:s");
+    $checkList = array(
       'username' => $data['username']
-    ];
-    if ($this->thisService->findDataByIdOrList($checkList)) {
+    );
+
+    if ($this->thisService->findDataByIdOrList($checkList) != null) {
       $result['success'] = false;
       $result['msg'] = '添加失败，管理员账号重复！';
     } else {
@@ -93,7 +94,7 @@ class Admin extends BaseController
       /** 判断 State 状态 */
       $result = $this->checkState($result, $state);
     }
-    return $result;
+    return json($result);
   }
 
   /**
@@ -130,7 +131,7 @@ class Admin extends BaseController
       $result['msg'] = '删除失败！';
     }
 
-    return $result;
+    return json($result);
   }
 
   /**
