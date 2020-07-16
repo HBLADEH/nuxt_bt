@@ -59,7 +59,8 @@ class Login extends BaseController
         // Session::set('userToken', $token); // 设置 token
         $result['data'] = [
           'token' => $token,
-          'username' => $username
+          'username' => $username,
+          'id' => $adminData['id'],
         ];
         $result['success'] = true;
         $result['msg'] = '登录成功！';

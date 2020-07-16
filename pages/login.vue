@@ -74,11 +74,12 @@
         </div>
       </div>
       <b-toast
-        id="example-toast"
-        title="BootstrapVue"
-        static
-        no-auto-hide
-      >Hello, world! This is a toast message.</b-toast>
+        id="login-toast"
+        :title="loginToast.title"
+        :variant="loginToast.variant"
+        @hidden="toHome"
+        auto-hide-delay="1000"
+      >{{loginToast.msg}}</b-toast>
     </div>
   </div>
 </template>
@@ -95,46 +96,50 @@ export default {
         username: '',
         password: '',
       },
+      loginToast: {
+        title: '',
+        msg: '',
+        variant: ''
+      }
     }
   },
   mounted() {
-
-    // 此为弹出框隐藏后的判断
-    this.$root.$on('bv::toast:hidden', event => {
-      if (this.isLogin && this.$cookiz.get('token') != '') {
-        this.$router.push({ path: '/welcome' })
-      }
-    })
   },
   created() {
   },
   methods: {
     doLogin(evt) {
       evt.preventDefault()
-
       this.$axios.post('/admin/login/checkLogin', qs.stringify(this.form)
       ).then(res => {
         let resState = res.data.success
-        let variant = 'danger'
-        let title = '登录错误'
+        this.loginToast.variant = 'danger'
+        this.loginToast.title = '登录错误'
+        this.loginToast.msg = res.data.msg
         // console.log(res.data.data.token);
         if (resState) {
-          variant = 'success'
-          title = '登录成功'
+          this.loginToast.variant = 'success'
+          this.loginToast.title = '登录成功'
           this.isLogin = true
-
           // 存储 token
-          this.$cookiz.set('token',res.data.data.token)
-          this.$cookiz.set('username',res.data.data.username)
+          this.$cookiz.set('token', res.data.data.token)
+          this.$cookiz.set('username', res.data.data.username)
+          this.$cookiz.set('userid', res.data.data.id)
         }
         // 显示提示框
-        this.$bvToast.toast(res.data.msg, {
-          title: title,
-          variant: variant,
-          solid: true,
-          autoHideDelay: 2000,
-        })
+        // this.$bvToast.toast(res.data.msg, {
+        //   title: title,
+        //   variant: variant,
+        //   solid: true,
+        //   autoHideDelay: 2000
+        // })
+        this.$bvToast.show('login-toast')
       })
+    },
+    toHome() {
+      if (this.isLogin && this.$cookiz.get('token') != '') {
+        this.$router.push({ path: '/welcome' })
+      }
     }
   },
 }

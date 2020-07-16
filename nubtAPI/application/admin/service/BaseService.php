@@ -92,6 +92,7 @@ class BaseService {
    */
   public function update($data) {
     $getData = $this->thisModel->get($data['id']); // 首先跟据 id 获取到数据
+ 
     unset($data['id']); // 去除数组中的 id 可少一次循环
     /** @var array 遍历要修改的数据,把每个新的数据赋值到之前搜索到的数据中 */
     foreach ($data as $key=>$value) {

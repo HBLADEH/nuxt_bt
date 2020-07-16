@@ -32,13 +32,10 @@
             </div>
           </template>
           <template v-slot:cell(actions)="row">
-            <!-- v-slot:cell(actions)="row" -->
             <b-button-group>
-              <b-button size="sm" variant="info" v-b-modal.modal-edit>修改</b-button>
-              <b-button size="sm" variant="danger" @click="doDelete(row.item)">删除</b-button>
+              <b-button size="sm" variant="info" @click="showEdit(row.item.id)">修改</b-button>
+              <b-button size="sm" variant="danger" @click="doDelete(row.item.id)">删除</b-button>
             </b-button-group>
-            <!-- <b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">修改</b-button>
-            <b-button size="sm" @click="row.toggleDetails">删除</b-button>-->
           </template>
         </b-table>
         <b-pagination
@@ -84,8 +81,24 @@
       </form>
     </b-modal>
 
-    <b-modal id="modal-edit" title="编辑数据">
-      <p class="my-4">编辑数据页面</p>
+    <b-modal id="modal-edit" title="编辑数据" @ok="doEdit" cancel-title="取消" ok-title="确认">
+      <form ref="editForm" @submit.stop.prevent="handleSubmit">
+        <b-form-group label="用户名称:" label-for="u-username" invalid-feedback="用户名必须要填写">
+          <b-form-input id="u-username" v-model="u_username" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="用户角色:" label-for="u-role" invalid-feedback="请选择一个角色">
+          <b-form-select id="u-role" v-model="u_roleid" :options="roleList" required></b-form-select>
+        </b-form-group>
+        <div class="custom-control custom-switch text-center">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="customSwitch2"
+            v-model="u_is_lock"
+          />
+          <label class="custom-control-label" for="customSwitch2">是否禁用</label>
+        </div>
+      </form>
     </b-modal>
   </div>
 </template>
@@ -96,7 +109,7 @@ export default {
   data() {
     return {
       userId: '',
-      perPage: 3, // 
+      perPage: 5, // 
       currentPage: 1, // 当前页数
       isBusy: false, // 是否忙碌
       pageCount: 0, // 数据总数
@@ -107,6 +120,11 @@ export default {
       n_cpassword: '',
       n_roleid: 2,
       n_is_lock: false,
+      // 编辑页面的数据参数
+      u_id: 0,
+      u_username: '',
+      u_roleid: 2,
+      u_is_lock: false,
       roleList: [{ text: '管理员', value: 1 }, { text: '订单处理员', value: 2 }],
       tableFileds: [
         {
@@ -172,6 +190,13 @@ export default {
       bvModalEvt.preventDefault()
       this.handleSubmit()
     },
+    resetAddForm() {
+      this.n_username = ''
+      this.n_password = ''
+      this.n_cpassword = ''
+      this.n_roleid = 2
+      this.n_is_lock = false
+    },
 
     // 检测验证值
     checkFormValidity() {
@@ -186,7 +211,6 @@ export default {
       if (!this.checkFormValidity()) {
         return
       }
-
       this.addPost()
     },
 
@@ -199,6 +223,8 @@ export default {
           roleid: this.n_roleid,
           is_lock: this.n_is_lock ? 5 : 1,
         })).then(res => {
+
+
           let resState = res.data.success
           let variant = 'danger'
           let title = '操作错误'
@@ -206,8 +232,11 @@ export default {
           if (resState) {
             variant = 'success'
             title = '操作成功'
+            this.getTableData()
+            this.resetAddForm()
           }
 
+          this.getTableData()
           // 显示提示框
           this.$bvToast.toast(res.data.msg, {
             title: title,
@@ -215,17 +244,36 @@ export default {
             solid: true,
             autoHideDelay: 2000,
           })
+
           if (resState) {
             this.$bvModal.hide('modal-add')
           }
         })
     },
 
-    // 删除操作
-    doDelete(item) {
-      this.$axios.post('/admin/admin/doDelete', qs.stringify(
+    // 显示编辑页面
+    showEdit(id) {
+      this.$axios.get('/admin/admin/edit', {
+        params: {
+          id: id,
+        }
+      }).then(res => {
+        this.u_id = res.data.id
+        this.u_username = res.data.username
+        this.u_roleid = res.data.roleid
+        this.u_is_lock = res.data.is_lock >= 5 ? true : false
+        this.$bvModal.show('modal-edit')
+      })
+    },
+
+    // 执行编辑操作
+    doEdit() {
+      this.$axios.post('/admin/admin/doEdit', qs.stringify(
         {
-          id: item.id,
+          id: this.u_id,
+          username: this.u_username,
+          roleid: this.u_roleid,
+          is_lock: this.u_is_lock ? 5 : 1,
         })).then(res => {
           let resState = res.data.success
           let variant = 'danger'
@@ -234,6 +282,7 @@ export default {
           if (resState) {
             variant = 'success'
             title = '操作成功'
+            this.getTableData()
           }
 
           // 显示提示框
@@ -243,12 +292,35 @@ export default {
             solid: true,
             autoHideDelay: 2000,
           })
+        })
+    },
+
+
+    // 删除操作
+    doDelete(id) {
+      this.$axios.post('/admin/admin/doDelete', qs.stringify(
+        {
+          id: id,
+        })).then(res => {
+          let resState = res.data.success
+          let variant = 'danger'
+          let title = '操作错误'
+
           if (resState) {
-            this.$bvModal.hide('modal-add')
+            variant = 'success'
+            title = '操作成功'
+            this.getTableData()
           }
+
+          // 显示提示框
+          this.$bvToast.toast(res.data.msg, {
+            title: title,
+            variant: variant,
+            solid: true,
+            autoHideDelay: 2000,
+          })
         })
     }
-
   },
   middleware: 'authenticated'
 }

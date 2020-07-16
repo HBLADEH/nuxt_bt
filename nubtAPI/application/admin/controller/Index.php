@@ -35,11 +35,6 @@ class Index extends BaseController
     return $this->fetch();
   }
 
-  public function passwordChange()
-  {
-    return $this->fetch();
-  }
-
 
   /**
    * index 的修改密码, 需要提供原密码才行嗷

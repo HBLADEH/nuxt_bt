@@ -24,22 +24,14 @@ class Admin extends BaseController
     $this->checkPermission(1);
     $this->thisService = model('Admin', 'service');
   }
-  public function index()
-  {
-    return $this->fetch();
-  }
-
-  public function add()
-  {
-    return $this->fetch();
-  }
 
   public function edit($id)
   {
     /** 获取数据 */
     $data = $this->thisService->findDataByIdOrList($id);
-    $this->assign('data', $data);
-    return $this->fetch();
+    return json($data);
+    // $this->assign('data', $data);
+    // return $this->fetch();
   }
 
   public function passwordChange($id)
@@ -104,14 +96,14 @@ class Admin extends BaseController
   public function doEdit()
   {
     $result = $this->createResultJSON();
-    $data = $_POST['data'];
+    $data = $_POST;
 
     $state = $this->thisService->update($data);
 
     /** 判断 State 状态 */
     $result = $this->checkState($result, $state);
 
-    return $result;
+    return json($result);
   }
 
   /**
@@ -141,31 +133,30 @@ class Admin extends BaseController
   public function doChangePassWord()
   {
     $result = $this->createResultJSON();
-    $id = $_POST['data']['id'];
+    $id = $_POST['id'];
     /** @var sring 密码需要进行 md5 转换 */
-    // $old_password = $this->thisService->strToMd5($_POST['data']['old_password']);
-    $new_password = $this->thisService->strToMd5($_POST['data']['new_password']);
-    // $map = [
-    //   'adminid' => $id,
-    //   'password' => $old_password
-    // ];
+    $old_password = $this->thisService->strToMd5($_POST['old_password']);
+    $new_password = $this->thisService->strToMd5($_POST['new_password']);
+    $map = [
+      'adminid' => $id,
+      'password' => $old_password
+    ];
 
     /** 先判断旧密码是否一致 */
-    // if ($this->thisService->findDataByIdOrList($map)) {
-    // unset($map['adminid']);
-    $map['id'] = $id;
-    $map['password'] = $new_password;
+    if ($this->thisService->findDataByIdOrList($map)) {
+      unset($map['adminid']);
+      $map['id'] = $id;
+      $map['password'] = $new_password;
 
-    /** 执行修改操作 */
-    $state = $this->thisService->update($map);
+      /** 执行修改操作 */
+      $state = $this->thisService->update($map);
 
-    /** 判断 State 状态 */
-    $result = $this->checkState($result, $state);
-
-    // } else {
-    //   $result['success'] = false;
-    //   $result['msg'] = '旧密码不和原来相同！';
-    // }
-    return $result;
+      /** 判断 State 状态 */
+      $result = $this->checkState($result, $state);
+    } else {
+      $result['success'] = false;
+      $result['msg'] = '旧密码不和原来相同！';
+    }
+    return json($result);
   }
 }
