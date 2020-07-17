@@ -45,7 +45,7 @@ class Login extends BaseController
       if ($is_lock >= 5) {
         $result['success'] = false;
         $result['msg'] = '账号已被锁定,请联系管理员解锁！';
-        return $result;
+        return json($result);
       }
       if ($adminData['password'] == $password) {
         $tokenUtil = new TokenUtil;

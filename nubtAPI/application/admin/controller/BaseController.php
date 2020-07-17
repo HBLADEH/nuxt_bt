@@ -265,8 +265,11 @@ class BaseController extends Controller
 
   public function checkPermission($permission)
   {
-    if (!Security::checkPermission(1)) {
-      $this->error("检测到该用户没有权限!!!");
+    if (!Security::checkPermission($permission)) {
+      // $this->error("检测到该用户没有权限!!!");
+      exception('异常消息', 10006);
+      // throw new \think\exception\HttpException(404, '检测到该用户没有权限!!!');
+      // throw new \think\Exception('检测到该用户没有权限!!!', 401);
     }
   }
 }

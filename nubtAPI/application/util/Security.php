@@ -19,11 +19,6 @@ class Security
    */
   public function checkPermission($permission)
   {
-    // $headers  = get_headers();
-    // foreach ($headers as $header => $value) {
-    //   echo "$header: $value <br />\n";
-    // }
-    // exit();
     $token  = $_SERVER['HTTP_AUTHORIZATION'];
     $AdminService = new AdminService();
     $permissions = $AdminService->getPermissionsByToken($token);

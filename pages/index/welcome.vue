@@ -48,20 +48,20 @@
 export default {
   data() {
     return {
-      infoList: {}
-    }
-  }, async asyncData({ $axios }) {
-    //发送ajax
-    let { data } = await $axios.get('/admin/index/getWelcomeInfo')
-    //封装
-    return {
-      infoList: data.data,
+      infoList: {},
       breadList: [
         {
           text: '首页',
           href: '/welcome'
         }
       ],
+    }
+  }, async asyncData({ $axios }) {
+    //发送ajax
+    let { data } = await $axios.get('/admin/index/getWelcomeInfo')
+    //封装
+    return {
+      infoList: data.data
     }
   },
   middleware: 'authenticated'

@@ -6,7 +6,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <li class="nav-item">
+          <li class="nav-item" v-if="show == true">
             <nuxt-link class="nav-link" to="/admin">管理员管理</nuxt-link>
           </li>
           <li class="nav-item">
@@ -31,7 +31,13 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-modal id="modal-changepassword" title="修改密码" @ok="doChangePassword" cancel-title="取消" ok-title="确认">
+    <b-modal
+      id="modal-changepassword"
+      title="修改密码"
+      @ok="doChangePassword"
+      cancel-title="取消"
+      ok-title="确认"
+    >
       <form ref="cpForm" @submit.stop.prevent="handleSubmit">
         <b-form-group label="用户旧密码:" label-for="oldpass" invalid-feedback="必须要填写">
           <b-form-input id="oldpass" type="password" v-model="oldpass" required></b-form-input>
@@ -40,7 +46,13 @@
           <b-form-input id="newpass" type="password" v-model="newpass" required></b-form-input>
         </b-form-group>
         <b-form-group label="确认新密码:" label-for="cnewpass" invalid-feedback="要和新密码一致">
-          <b-form-input id="cnewpass" type="password" v-model="cnewpass" required :pattern="newpass"></b-form-input>
+          <b-form-input
+            id="cnewpass"
+            type="password"
+            v-model="cnewpass"
+            required
+            :pattern="newpass"
+          ></b-form-input>
         </b-form-group>
       </form>
     </b-modal>
@@ -56,14 +68,33 @@ export default {
       oldpass: '',
       newpass: '',
       cnewpass: '',
-
+      show: false
+    }
+  }, async asyncData({ $axios }) {
+    //发送ajax
+    let { data } = await $axios.get('/admin/admin/checkPermission', qs.stringify(
+      {
+        permission: 1,
+      }))
+    //封装
+    return {
+      show: data.data.code == 500 ? false : true
     }
   },
   created() {
   },
   mounted() {
     this.username = this.$cookiz.get('username')
-
+    this.$axios.post('/admin/admin/checkPermission', qs.stringify(
+      {
+        permission: 1,
+      })).then(res => {
+        if (res.data.code == 500) {
+          this.show = false
+        } else {
+          this.show = true
+        }
+      })
     // 此为弹出框隐藏后的判断
     this.$root.$on('bv::toast:hidden', event => {
       if (!this.$cookiz.get('token')) {

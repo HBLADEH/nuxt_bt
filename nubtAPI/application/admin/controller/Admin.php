@@ -22,6 +22,8 @@ class Admin extends BaseController
   {
     parent::__construct(); // 必须添加,需要执行父类的初始化函数,不管有没有
     $this->checkPermission(1);
+
+
     $this->thisService = model('Admin', 'service');
   }
 
