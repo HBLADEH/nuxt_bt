@@ -16,16 +16,7 @@
             </b-input-group>
           </div>
         </div>
-        <b-table
-          id="data-table"
-          table-variant="primary"
-          responsive
-          bordered
-          hover
-          :busy="isBusy"
-          :items="tableItems"
-          :fields="tableFileds"
-        >
+        <b-table id="data-table" table-variant="primary" responsive bordered hover :busy="isBusy" :items="tableItems" :fields="tableFileds">
           <template v-slot:table-busy>
             <div class="text-center text-danger my-2">
               <b-spinner class="align-middle"></b-spinner>
@@ -35,23 +26,17 @@
           <template v-slot:cell(actions)="row">
             <b-button-group>
               <b-button size="sm" variant="info" @click="showEdit(row.item.id)">修改</b-button>
+              <b-button size="sm" variant="secondary" @click="showPC(row.item.id)">重置密码</b-button>
               <b-button size="sm" variant="danger" @click="doDelete(row.item.id)">删除</b-button>
             </b-button-group>
           </template>
         </b-table>
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="rows"
-          :per-page="perPage"
-          aria-controls="data-table"
-          align="center"
-          @input="changePage"
-        ></b-pagination>
+        <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" aria-controls="data-table" align="center" @input="changePage"></b-pagination>
       </div>
     </b-card>
 
     <b-modal id="modal-add" ref="addModal" title="添加数据" @ok="doAdd" cancel-title="取消" ok-title="确认">
-      <form ref="addForm" @submit.stop.prevent="handleSubmit">
+      <form ref="addForm" @submit.stop.prevent="addhandleSubmit">
         <b-form-group label="用户名称:" label-for="n-username" invalid-feedback="用户名必须要填写">
           <b-form-input id="n-username" v-model="n_username" required></b-form-input>
         </b-form-group>
@@ -59,31 +44,20 @@
           <b-form-input id="n-password" type="password" v-model="n_password" required></b-form-input>
         </b-form-group>
         <b-form-group label="确认密码:" label-for="n-cpassword" invalid-feedback="确认密码必须要一致">
-          <b-form-input
-            id="n-cpassword"
-            type="password"
-            v-model="n_cpassword"
-            required
-            :pattern="n_password"
-          ></b-form-input>
+          <b-form-input id="n-cpassword" type="password" v-model="n_cpassword" required :pattern="n_password"></b-form-input>
         </b-form-group>
         <b-form-group label="用户角色:" label-for="n-cpassword" invalid-feedback="请选择一个角色">
           <b-form-select id="n-role" v-model="n_roleid" :options="roleList" required></b-form-select>
         </b-form-group>
         <div class="custom-control custom-switch text-center">
-          <input
-            type="checkbox"
-            class="custom-control-input"
-            id="customSwitch1"
-            v-model="n_is_lock"
-          />
+          <input type="checkbox" class="custom-control-input" id="customSwitch1" v-model="n_is_lock" />
           <label class="custom-control-label" for="customSwitch1">是否禁用</label>
         </div>
       </form>
     </b-modal>
 
     <b-modal id="modal-edit" title="编辑数据" @ok="doEdit" cancel-title="取消" ok-title="确认">
-      <form ref="editForm" @submit.stop.prevent="handleSubmit">
+      <form ref="editForm" @submit.stop.prevent="edithandleSubmit">
         <b-form-group label="用户名称:" label-for="u-username" invalid-feedback="用户名必须要填写">
           <b-form-input id="u-username" v-model="u_username" required></b-form-input>
         </b-form-group>
@@ -91,14 +65,22 @@
           <b-form-select id="u-role" v-model="u_roleid" :options="roleList" required></b-form-select>
         </b-form-group>
         <div class="custom-control custom-switch text-center">
-          <input
-            type="checkbox"
-            class="custom-control-input"
-            id="customSwitch2"
-            v-model="u_is_lock"
-          />
+          <input type="checkbox" class="custom-control-input" id="customSwitch2" v-model="u_is_lock" />
           <label class="custom-control-label" for="customSwitch2">是否禁用</label>
         </div>
+      </form>
+    </b-modal>
+    <b-modal id="modal-adchangepassword" title="修改密码" @ok="doChangePassword" cancel-title="取消" ok-title="确认">
+      <form ref="adcpForm" @submit.stop.prevent="adcphandleSubmit">
+        <b-form-group label="用户旧密码:" label-for="oldpass" invalid-feedback="必须要填写">
+          <b-form-input id="oldpass" type="password" v-model="oldpass" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="用户新密码:" label-for="newpass" invalid-feedback="必须要填写">
+          <b-form-input id="newpass" type="password" v-model="newpass" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="确认新密码:" label-for="cnewpass" invalid-feedback="要和新密码一致">
+          <b-form-input id="cnewpass" type="password" v-model="cnewpass" required :pattern="newpass"></b-form-input>
+        </b-form-group>
       </form>
     </b-modal>
   </div>
@@ -126,6 +108,11 @@ export default {
       u_username: '',
       u_roleid: 2,
       u_is_lock: false,
+      //
+      adcpid: 0,
+      oldpass: '',
+      newpass: '',
+      cnewpass: '',
       roleList: [{ text: '管理员', value: 1 }, { text: '订单处理员', value: 2 }],
       tableFileds: [
         {
@@ -198,7 +185,7 @@ export default {
     doAdd(bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
-      this.handleSubmit()
+      this.addhandleSubmit()
     },
     resetAddForm() {
       this.n_username = ''
@@ -209,19 +196,34 @@ export default {
     },
 
     // 检测验证值
-    checkFormValidity() {
-      const valid = this.$refs.addForm.checkValidity()
-      this.$refs.addForm.classList.add('was-validated');
+    checkFormValidity(target) {
+      const valid = this.$refs[target].checkValidity()
+      this.$refs[target].classList.add('was-validated');
       return valid
     },
 
     //提交事件
-    handleSubmit() {
+    addhandleSubmit() {
       // Exit when the form isn't valid
-      if (!this.checkFormValidity()) {
+      if (!this.checkFormValidity('addForm')) {
         return
       }
       this.addPost()
+    },
+    //提交事件
+    edithandleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity('editForm')) {
+        return
+      }
+      this.editPost()
+    },
+    adcphandleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity('adcpForm')) {
+        return
+      }
+      this.adcpPost()
     },
 
     // 提交添加请求
@@ -240,6 +242,7 @@ export default {
           let title = '操作错误'
 
           if (resState) {
+            this.$bvModal.hide('modal-add')
             variant = 'success'
             title = '操作成功'
             this.getTableData()
@@ -254,10 +257,6 @@ export default {
             solid: true,
             autoHideDelay: 2000,
           })
-
-          if (resState) {
-            this.$bvModal.hide('modal-add')
-          }
         })
     },
 
@@ -277,7 +276,13 @@ export default {
     },
 
     // 执行编辑操作
-    doEdit() {
+    doEdit(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      this.edithandleSubmit()
+    },
+
+    editPost() {
       this.$axios.post('/admin/admin/doEdit', qs.stringify(
         {
           id: this.u_id,
@@ -290,6 +295,7 @@ export default {
           let title = '操作错误'
 
           if (resState) {
+            this.$bvModal.hide('modal-edit')
             variant = 'success'
             title = '操作成功'
             this.getTableData()
@@ -305,6 +311,47 @@ export default {
         })
     },
 
+    showPC(id) {
+      this.$bvModal.show('modal-adchangepassword')
+      this.adcpid = id
+    },
+
+    doChangePassword(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      this.adcphandleSubmit()
+    },
+
+    adcpPost() {
+      this.$axios.post('/admin/admin/doChangePassWord', qs.stringify(
+        {
+          id: this.adcpid,
+          old_password: this.oldpass,
+          new_password: this.newpass,
+        })).then(res => {
+
+          let resState = res.data.success
+          let variant = 'danger'
+          let title = '操作错误'
+          console.log(resState);
+          if (resState) {
+            this.$bvModal.hide('modal-adchangepassword')
+            this.oldpass = ''
+            this.newpass = ''
+            this.cnewpass = ''
+            variant = 'success'
+            title = '操作成功'
+          }
+
+          // 显示提示框
+          this.$bvToast.toast(res.data.msg, {
+            title: title,
+            variant: variant,
+            solid: true,
+            autoHideDelay: 2000,
+          })
+        })
+    },
 
     // 删除操作
     doDelete(id) {
