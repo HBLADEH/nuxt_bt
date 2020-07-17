@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-breadcrumb :items="breadList"></b-breadcrumb>
     <b-card class="text-center " style="margin: 5px">
       <div class="container ">
         <div class="row">
@@ -54,7 +55,13 @@ export default {
     let { data } = await $axios.get('/admin/index/getWelcomeInfo')
     //封装
     return {
-      infoList: data.data
+      infoList: data.data,
+      breadList: [
+        {
+          text: '首页',
+          href: '/welcome'
+        }
+      ],
     }
   },
   middleware: 'authenticated'

@@ -8,7 +8,7 @@ use think\Exception;
 /**
  * 电话号码
  */
-class UserPhone extends BaseController
+class Relation extends BaseController
 {
   /**
    * 初始化函数,用于给全局变量实例化
@@ -35,11 +35,12 @@ class UserPhone extends BaseController
   }
 
   public function Findall()
-  { //找到全部加模糊查询
+  { 
+    //找到全部加模糊查询
     // $ip = $_GET['ip']; //ip地址
     // $userphone = $_GET['userphone']; //电话号码
     // $createtime = $_GET['createtime']; //创建时间
-    // $limit = $_GET['limit'];
+    $limit = $_GET['limit'];
      $page = $_GET['page'];
    
     $order=$this->request->param('order');
@@ -52,9 +53,6 @@ class UserPhone extends BaseController
     $_SESSION['times'] = 0; // 第一次前后台差异为0
     
     $data = $this->thisService->laytableSearch($map, $page, $limit);
-     
-
-
 
     return json($data);
   }

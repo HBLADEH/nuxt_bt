@@ -9,8 +9,9 @@
           <li class="nav-item">
             <nuxt-link class="nav-link" to="/admin">管理员管理</nuxt-link>
           </li>
-          <!-- <b-nav-item href="#">管理员管理</b-nav-item> -->
-          <b-nav-item href="#">管理</b-nav-item>
+          <li class="nav-item">
+            <nuxt-link class="nav-link" to="/product">订单管理</nuxt-link>
+          </li>
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
@@ -66,7 +67,8 @@ export default {
       username: '',
       oldpass: '',
       newpass: '',
-      cnewpass: ''
+      cnewpass: '',
+
     }
   },
   created() {

@@ -4,9 +4,9 @@
     <b-card class="text-center" style="margin: 5px">
       <div class="container">
         <div class="row no-gutters mb-2">
-          <div class="col-6 text-left">
+          <!-- <div class="col-6 text-left">
             <b-button variant="primary" v-b-modal.modal-add>添加</b-button>
-          </div>
+          </div>-->
           <div class="col-6">
             <b-input-group>
               <b-form-input v-model="username" type="search" id="filterInput" placeholder="请输入用户名"></b-form-input>
@@ -133,17 +133,17 @@ export default {
           label: '用户ID',
         },
         {
-          key: 'username',
-          label: '用户名',
+          key: 'order',
+          label: '单号',
         },
         {
-          key: 'just',
-          label: '用户权限',
+          key: 'money',
+          label: '金额',
           sortable: false
         },
         {
-          key: 'is_lock',
-          label: '是否被禁用',
+          key: 'purchase_time',
+          label: '提交时间',
         }, { key: 'actions', label: '操作' }
       ],
       tableItems: [],
@@ -152,12 +152,11 @@ export default {
           text: '首页',
           href: '/welcome'
         },{
-          text: '管理员管理',
-          href: '/admin'
+          text: '订单管理',
+          href: '/product'
         }
       ],
     }
-  }, async asyncData({ $axios }) {
   },
   created() {
   },
@@ -171,7 +170,7 @@ export default {
   }, methods: {
     getTableData() {
       this.toggleBusy() // 先让表处于繁忙状态
-      this.$axios.get('/admin/admin/FindAll',
+      this.$axios.get('/admin/relation/FindAll',
         {
           params: {
             page: this.currentPage,

@@ -43,7 +43,7 @@
                     <div id="login-password-error" class="is-invalid invalid-feedback">请输入密码</div>
                   </div>
                   <button id="login" type="submit" class="btn btn-primary" onclick>登录</button>
-                  <div style="margin-top: -40px;">
+                  <!-- <div style="margin-top: -40px;">
                     <div class="custom-control custom-checkbox" style="float: right;">
                       <input type="checkbox" class="custom-control-input" id="check2" />
                       <label class="custom-control-label" for="check2">自动登录</label>
@@ -52,11 +52,11 @@
                       <input type="checkbox" class="custom-control-input" id="check1" />
                       <label class="custom-control-label" for="check1">记住密码&nbsp;&nbsp;</label>
                     </div>
-                  </div>
+                  </div> -->
                 </b-form>
                 <br />
-                <small>没有账号?</small>
-                <a href="#" class="singup">&nbsp;注册</a>
+                <!-- <small>没有账号?</small>
+                <a href="#" class="singup">&nbsp;注册</a> -->
               </div>
             </div>
           </div>

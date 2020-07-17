@@ -1,7 +1,6 @@
 <template>
   <div>
     <AdminNavbar></AdminNavbar>
-    <b-breadcrumb :items="breadList"></b-breadcrumb>
     <router-view></router-view>
   </div>
 </template>
@@ -11,12 +10,7 @@ import AdminNavbar from '~/components/admin/AdminNavbar.vue';
 export default {
   data() {
     return {
-      breadList: [
-        {
-          text: '首页',
-          href: '#'
-        },
-      ],
+ 
     }
   },
   created() {
