@@ -60,12 +60,13 @@ class Relation extends BaseController
   public function doadd()
   {
     $result = $this->createResultJSON();
-    $data = $_POST['data'];
+    $data = $_POST;
+    $data['purchase_time'] = date("Y-m-d h:i:s");
     $state = $this->thisService->insert($data);
     /** 判断 State 状态 */
     $result = $this->checkState($result, $state);
 
-    return $result;
+    return json($result);
   }
   public function send_workman()
   {
@@ -121,7 +122,7 @@ class Relation extends BaseController
       $result['msg'] = '删除失败！';
     }
 
-    return $result;
+    return json($result);
   }
 
   public function checkCount()

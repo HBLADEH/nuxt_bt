@@ -4,6 +4,9 @@
     <b-card class="text-center" style="margin: 5px">
       <div class="container">
         <div class="row no-gutters mb-2">
+          <div class="col-6 text-left">
+            <b-button variant="primary" v-b-modal.modal-padd>添加</b-button>
+          </div>
           <div class="col-6">
             <b-input-group>
               <b-form-input v-model="order" type="search" id="filterInput" placeholder="请输入单号"></b-form-input>
@@ -29,6 +32,11 @@
               <strong>Loading...</strong>
             </div>
           </template>
+          <template v-slot:cell(actions)="row">
+            <b-button-group>
+              <b-button size="sm" variant="danger" @click="doDelete(row.item.id)">删除</b-button>
+            </b-button-group>
+          </template>
         </b-table>
         <b-pagination
           v-model="currentPage"
@@ -40,6 +48,16 @@
         ></b-pagination>
       </div>
     </b-card>
+    <b-modal id="modal-padd" ref="paddModal" title="添加订单" @ok="doAdd" cancel-title="取消" ok-title="确认">
+      <form ref="paddForm" @submit.stop.prevent="paddhandleSubmit">
+        <b-form-group label="订单名称:" label-for="n-order" invalid-feedback="订单名必须要填写">
+          <b-form-input id="n-n_order" v-model="n_order" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="金额:" label-for="n-money" invalid-feedback="金额必须要填写">
+          <b-form-input id="n-money" type="text" v-model="n_money" required></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -54,6 +72,8 @@ export default {
       isBusy: false, // 是否忙碌
       pageCount: 0, // 数据总数
       order: '', // 检索单号
+      n_order: '',
+      n_money: '',
       tableFileds: [
         {
           key: 'id',
@@ -71,7 +91,7 @@ export default {
         {
           key: 'purchase_time',
           label: '提交时间',
-        }
+        }, { key: 'actions', label: '操作' }
       ],
       tableItems: [],
       breadList: [
@@ -127,11 +147,8 @@ export default {
       this.handleSubmit()
     },
     resetAddForm() {
-      this.n_username = ''
-      this.n_password = ''
-      this.n_cpassword = ''
-      this.n_roleid = 2
-      this.n_is_lock = false
+      this.n_order = ''
+      this.n_money = ''
     },
 
     // 检测验证值
@@ -141,10 +158,31 @@ export default {
       return valid
     },
 
+     // 添加页面的确认按钮
+    doAdd(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      this.paddhandleSubmit()
+    },
+    resetAddForm() {
+      this.n_username = ''
+      this.n_password = ''
+      this.n_cpassword = ''
+      this.n_roleid = 2
+      this.n_is_lock = false
+    },
+
+    // 检测验证值
+    checkFormValidity(target) {
+      const valid = this.$refs[target].checkValidity()
+      this.$refs[target].classList.add('was-validated');
+      return valid
+    },
+
     //提交事件
-    handleSubmit() {
+    paddhandleSubmit() {
       // Exit when the form isn't valid
-      if (!this.checkFormValidity()) {
+      if (!this.checkFormValidity('paddForm')) {
         return
       }
       this.addPost()
@@ -152,12 +190,10 @@ export default {
 
     // 提交添加请求
     addPost() {
-      this.$axios.post('/admin/admin/doAdd', qs.stringify(
+      this.$axios.post('/admin/relation/doAdd', qs.stringify(
         {
-          username: this.n_username,
-          password: this.n_password,
-          roleid: this.n_roleid,
-          is_lock: this.n_is_lock ? 5 : 1,
+          order: this.n_order,
+          money: this.n_money,
         })).then(res => {
 
 
@@ -182,7 +218,7 @@ export default {
           })
 
           if (resState) {
-            this.$bvModal.hide('modal-add')
+            this.$bvModal.hide('modal-padd')
           }
         })
     },
@@ -232,31 +268,31 @@ export default {
     // },
 
 
-    // // 删除操作
-    // doDelete(id) {
-    //   this.$axios.post('/admin/admin/doDelete', qs.stringify(
-    //     {
-    //       id: id,
-    //     })).then(res => {
-    //       let resState = res.data.success
-    //       let variant = 'danger'
-    //       let title = '操作错误'
+    // 删除操作
+    doDelete(id) {
+      this.$axios.post('/admin/relation/doDelete', qs.stringify(
+        {
+          id: id,
+        })).then(res => {
+          let resState = res.data.success
+          let variant = 'danger'
+          let title = '操作错误'
 
-    //       if (resState) {
-    //         variant = 'success'
-    //         title = '操作成功'
-    //         this.getTableData()
-    //       }
+          if (resState) {
+            variant = 'success'
+            title = '操作成功'
+            this.getTableData()
+          }
 
-    //       // 显示提示框
-    //       this.$bvToast.toast(res.data.msg, {
-    //         title: title,
-    //         variant: variant,
-    //         solid: true,
-    //         autoHideDelay: 2000,
-    //       })
-    //     })
-    // }
+          // 显示提示框
+          this.$bvToast.toast(res.data.msg, {
+            title: title,
+            variant: variant,
+            solid: true,
+            autoHideDelay: 2000,
+          })
+        })
+    }
   },
   middleware: 'authenticated'
 }
