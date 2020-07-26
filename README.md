@@ -1,5 +1,6 @@
 # nuxt_bt
-
+# web 期末作业，前台nuxt,后台thinkphp。 
+## 后台有基于角色的基本管理，但是比较乱。没时间弄了，就先不管了。
 ## Build Setup
 
 ```bash
